@@ -62,8 +62,6 @@ jobs:
 
       - name: Delete Untagged images
         run: |
-      - name: Delete Untagged images
-        run: |
           # 1. タグ一覧取得
           TAGS=$(gh api -X GET /user/packages/container/${{ env.REPO_NAME }}/versions --paginate --jq '.[] | select(.metadata.container.tags | length > 0) | .metadata.container.tags[]')
           
