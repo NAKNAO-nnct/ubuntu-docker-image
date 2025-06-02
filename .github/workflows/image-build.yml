@@ -62,8 +62,28 @@ jobs:
 
       - name: Delete Untagged images
         run: |
-          untagged_images=$(gh api -X GET /user/packages/container/${{ env.REPO_NAME }}/versions --paginate --jq '.[] | select(.metadata.container.tags | length == 0) | .id')
-          for image_id in ${untagged_images}; do
-            echo "Deleting image with ID: ${image_id}"
-            gh api -X DELETE /user/packages/container/${{ env.REPO_NAME }}/versions/${image_id}
+      - name: Delete Untagged images
+        run: |
+          # 1. タグ一覧取得
+          TAGS=$(gh api -X GET /user/packages/container/${{ env.REPO_NAME }}/versions --paginate --jq '.[] | select(.metadata.container.tags | length > 0) | .metadata.container.tags[]')
+          
+          # 2. 各タグのdigest収集
+          TAGGED_DIGESTS=""
+          for TAG in $TAGS; do
+            DIGEST=$(docker manifest inspect ghcr.io/${{ env.IMAGE_NAME }}:${TAG} | jq -r '.manifests[].digest')
+            TAGGED_DIGESTS="${TAGGED_DIGESTS}\n${DIGEST}"
+          done
+          
+          # 3. untaggedイメージのdigest取得と削除判定（APIからid/digest取得）
+          UNTAGGED_IMAGES=$(gh api -X GET /user/packages/container/${{ env.REPO_NAME }}/versions --paginate --jq '.[] | select(.metadata.container.tags | length == 0)')
+          for row in $UNTAGGED_IMAGES; do
+            DIGEST=$(echo "$row" | jq -r '.name')
+            DIGEST=${DIGEST#sha256:}
+            ID=$(echo "$row" | jq -r '.id')
+            if ! echo -e "$TAGGED_DIGESTS" | grep -q "$DIGEST"; then
+              echo "Deleting untagged image ID: $ID (digest: $DIGEST)"
+              gh api -X DELETE /user/packages/container/${{ env.REPO_NAME }}/versions/$ID
+            else
+              echo "Skipping untagged image ID: $ID (digest: $DIGEST), referenced by a tag"
+            fi
           done
