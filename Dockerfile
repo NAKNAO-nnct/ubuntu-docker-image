@@ -1,5 +1,7 @@
 FROM ubuntu:24.04
 
+ENV DEBCONF_NOWARNINGS=yes
+
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     vim \ 
     unzip \ 
