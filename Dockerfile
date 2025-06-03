@@ -53,4 +53,4 @@ RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y
     && sudo apt update \
     && sudo apt install gh -y
 
-CMD ["/usr/local/bin/dockerd", "--host=unix:///var/run/docker.sock", "--host=tcp://127.0.0.1:2375", "--storage-driver=overlay2", "&", "/bin/bash"]
+CMD ["/bin/bash"]
