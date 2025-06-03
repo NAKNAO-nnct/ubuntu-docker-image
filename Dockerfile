@@ -36,18 +36,10 @@ ADD ./scripts/ /tmp/
 # install docker
 RUN chmod +x /tmp/install_docker.sh && /tmp/install_docker.sh \
     && rm -rf /tmp/install_docker.sh
-# RUN sudo curl -fsSL https://get.docker.com -o get-docker.sh \
-#     && sudo sh get-docker.sh \
-#     && sudo echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker/daemon.json > /dev/null \
-#     && systemctl enable docker
 
 # install aws-cli / ssm plugin
 RUN chmod +x /tmp/install_awscli.sh && /tmp/install_awscli.sh \
     && rm -rf /tmp/install_awscli.sh
-# RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-#     && unzip awscliv2.zip && sudo ./aws/install && rm -rf awscliv2.zip \
-#     && curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb" \
-#     && sudo dpkg -i session-manager-plugin.deb
 
 # install gh
 RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
