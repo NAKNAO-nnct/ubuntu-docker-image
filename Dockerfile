@@ -34,7 +34,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 # install docker 
 RUN sudo curl -fsSL https://get.docker.com -o get-docker.sh \
     && sudo sh get-docker.sh \
-    && sudo echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker/daemon.json > /dev/null
+    && sudo echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker/daemon.json > /dev/null \
+    && systemctl enable docker
 
 # install aws-cli / ssm plugin
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
