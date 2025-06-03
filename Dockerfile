@@ -50,8 +50,4 @@ RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y
 	&& sudo apt install gh -y \
     && sudo ln -s /usr/bin/docker* /usr/local/bin/
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-CMD ["/bin/bash"]
+CMD ["/usr/bin/dockerd", "--host=unix:///var/run/docker.sock", "--host=tcp://127.0.0.1:2375", "--storage-driver=fuse-overlayfs", "&", "/bin/bash"]
