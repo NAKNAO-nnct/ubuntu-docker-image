@@ -25,6 +25,9 @@ jobs:
       packages: write
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: actions/checkout@v4
         with:
           repository: aws/aws-codebuild-docker-images
@@ -35,6 +38,9 @@ jobs:
         with:
           install: true
 
+      - name: replace Dockerfile
+        run: cp Dockerfile.aws.base docker-standard/ubuntu/standard/7.0/Dockerfile
+
       - name: build standard image
         uses: docker/build-push-action@v5
         with:
@@ -43,9 +49,6 @@ jobs:
           tags: aws/codebuild/standard:7.0
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
