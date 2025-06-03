@@ -1,3 +1,5 @@
+FROM gcr.io/kaniko-project/executor:debug AS kaniko
+
 FROM ubuntu:24.04
 
 ENV DEBCONF_NOWARNINGS=yes
@@ -34,8 +36,10 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 COPY ./scripts/* /tmp/scripts/
 RUN chmod +x /tmp/scripts/*.sh
 
-RUN /tmp/scripts/install_docker.sh && \
-    /tmp/scripts/install_awscli.sh
+# RUN /tmp/scripts/install_docker.sh && \
+#     /tmp/scripts/install_awscli.sh
+
+RUN /tmp/scripts/install_awscli.sh
 
 RUN echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker/daemon.json > /dev/null \
     && (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
@@ -48,4 +52,11 @@ RUN echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker
 	&& sudo apt install gh -y \
     && sudo ln -s /usr/bin/docker* /usr/local/bin/
 
-CMD ["/bin/bash"]
+COPY --from=kaniko /kaniko /kaniko
+
+ENV PATH=/kaniko:$PATH
+ENV SSL_CERT_DIR=/kaniko/ssl/certs
+ENV DOCKER_CONFIG=/kaniko/.docker/
+ENV DOCKER_CREDENTIAL_GCR_CONFIG=/kaniko/.config/gcloud/docker_credential_gcr_config.json
+
+ENTRYPOINT ["/kaniko/executor"]
