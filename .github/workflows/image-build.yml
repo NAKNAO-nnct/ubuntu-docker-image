@@ -39,7 +39,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: docker-standard/ubuntu/standard/7.0
-          file: Dockerfile
           push: true
           tags: aws/codebuild/standard:7.0
           cache-from: type=gha
