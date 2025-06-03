@@ -34,8 +34,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
 COPY ./scripts/* /tmp/scripts/
 RUN chmod +x /tmp/scripts/*.sh
 
-# RUN /tmp/scripts/install_docker.sh && \
-#     /tmp/scripts/install_awscli.sh
+RUN /tmp/scripts/install_docker.sh
 
 RUN /tmp/scripts/install_awscli.sh
 
@@ -47,8 +46,8 @@ RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y
 	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
 	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
 	&& sudo apt update \
-	&& sudo apt install gh -y
-    # && sudo ln -s /usr/bin/docker* /usr/local/bin/
+	&& sudo apt install gh -y \
+    && sudo ln -s /usr/bin/docker* /usr/local/bin/
 
 ARG USERNAME=user
 ARG GROUPNAME=user
