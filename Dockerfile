@@ -1,5 +1,3 @@
-FROM gcr.io/kaniko-project/executor:debug AS kaniko
-
 FROM ubuntu:24.04
 
 ENV DEBCONF_NOWARNINGS=yes
@@ -49,15 +47,21 @@ RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y
 	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
 	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
 	&& sudo apt update \
-	&& sudo apt install gh -y \
-    && sudo ln -s /usr/bin/docker* /usr/local/bin/
+	&& sudo apt install gh -y
+    # && sudo ln -s /usr/bin/docker* /usr/local/bin/
 
-COPY --from=kaniko /kaniko /kaniko
+ARG USERNAME=user
+ARG GROUPNAME=user
+ARG UID=1000
+ARG GID=1000
+ARG DOCKER_GROUPNAME=docker
+ARG DOCKER_GID=994
 
-ENV PATH=/kaniko:$PATH
-ENV SSL_CERT_DIR=/kaniko/ssl/certs
-ENV DOCKER_CONFIG=/kaniko/.docker/
-ENV DOCKER_CREDENTIAL_GCR_CONFIG=/kaniko/.config/gcloud/docker_credential_gcr_config.json
+RUN apt-get update && apt-get install -y --no-install-recommends docker-ce-cli
 
-# ENTRYPOINT ["/kaniko/executor"]
+RUN groupadd -g ${GID} ${GROUPNAME} && \
+    groupadd -g ${DOCKER_GID} ${DOCKER_GROUPNAME} && \
+    useradd -m -s /bin/bash -u ${UID} -g ${GID} -G ${DOCKER_GID} ${USERNAME}
+USER ${USERNAME}
+
 CMD ["/bin/bash"]
