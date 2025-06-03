@@ -1,7 +1,7 @@
 FROM ubuntu:24.04
 
-COPY --from=myoung34/github-runner-base:latest /tmp/build/ /tmp/build/
+RUN git clone --depth 1 https://github.com/myoung34/docker-github-actions-runner.git
 
-RUN /tmp/build/install_base.sh
+RUN docker-github-actions-runner/build/install_base.sh
 
 CMD ["/bin/bash"]
