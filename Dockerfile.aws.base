@@ -209,6 +209,6 @@ RUN chmod +x /usr/local/bin/dockerd-entrypoint.sh
 COPY legal/bill_of_material.txt /usr/share/doc/bill_of_material.txt
 COPY amazon-ssm-agent.json /etc/amazon/ssm/amazon-ssm-agent.json
 
-ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh"]
+CMD ["/usr/local/bin/dockerd-entrypoint.sh"]
 
 #=======================END of STD:7.0  =================
