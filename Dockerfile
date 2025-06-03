@@ -41,8 +41,8 @@ RUN chmod +x /tmp/scripts/*.sh
 
 RUN /tmp/scripts/install_awscli.sh
 
-RUN echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker/daemon.json > /dev/null \
-    && (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+# RUN echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker/daemon.json > /dev/null \
+RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
 	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
     && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
     && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
