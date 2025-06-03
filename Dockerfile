@@ -49,18 +49,6 @@ RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y
 	&& sudo apt install gh -y \
     && sudo ln -s /usr/bin/docker* /usr/local/bin/
 
-ARG USERNAME=user
-ARG GROUPNAME=user
-ARG UID=1000
-ARG GID=1000
-ARG DOCKER_GROUPNAME=docker
-ARG DOCKER_GID=994
-
 RUN apt-get update && apt-get install -y --no-install-recommends docker-ce-cli
-
-RUN groupadd -g ${GID} ${GROUPNAME} && \
-    groupadd -g ${DOCKER_GID} ${DOCKER_GROUPNAME} && \
-    useradd -m -s /bin/bash -u ${UID} -g ${GID} -G ${DOCKER_GID} ${USERNAME}
-USER ${USERNAME}
 
 CMD ["/bin/bash"]
