@@ -209,6 +209,11 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
 #=======================End of stage: tools  =================
 FROM tools AS runtimes
 
+RUN git clone --depth 1 https://github.com/myoung34/docker-github-actions-runner.git && \
+    cd docker-github-actions-runner && \
+    chmod +x build/* && \
+    ./build/install_base.sh
+
 RUN rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/* && apt-get clean && apt-get update
 
 #=======================End of stage: runtimes  =================
