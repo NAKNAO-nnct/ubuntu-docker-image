@@ -1,12 +1,48 @@
-# FROM ubuntu:24.04
+FROM ubuntu:24.04
 
-# RUN apt-get update && apt-get install -y git curl sudo
+ENV DEBCONF_NOWARNINGS=yes
 
-# RUN git clone --depth 1 https://github.com/myoung34/docker-github-actions-runner.git
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+    vim \
+    unzip \
+    tmux \
+    git \
+    ca-certificates \
+    curl \
+    wget \
+    jq \
+    yq \
+    ssh \
+    zip \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libreadline-dev \
+    libffi-dev \
+    libcurl4-openssl-dev \
+    gnupg \
+    tar \
+    apt-transport-https \
+    sudo \
+    dirmngr \
+    locales \
+    gosu \
+    gpg-agent \
+    dumb-init \
+    libc-bin
 
-# WORKDIR /docker-github-actions-runner
-
-# RUN chmod +x build/*.sh && build/install_base.sh
-FROM myoung34/github-runner-base:latest
+RUN curl -fsSL https://get.docker.com -o get-docker.sh \
+    && sh get-docker.sh \
+    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip && sudo ./aws/install && rm -rf awscliv2.zip \
+    && echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker/daemon.json > /dev/null \
+    && (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+    && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& sudo apt update \
+	&& sudo apt install gh -y
 
 CMD ["/bin/bash"]
