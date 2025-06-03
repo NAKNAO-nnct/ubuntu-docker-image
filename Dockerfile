@@ -49,6 +49,8 @@ RUN (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y
 	&& sudo apt install gh -y \
     && sudo ln -s /usr/bin/docker* /usr/local/bin/
 
-RUN apt-get update && apt-get install -y --no-install-recommends docker-ce-cli
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["/bin/bash"]
