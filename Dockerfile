@@ -45,6 +45,7 @@ RUN echo '{"registry-mirrors":["https://mirror.gcr.io"]}' | sudo tee /etc/docker
 	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
 	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
 	&& sudo apt update \
-	&& sudo apt install gh -y
+	&& sudo apt install gh -y \
+    && sudo ln -s /usr/bin/docker* /usr/local/bin/
 
 CMD ["/bin/bash"]
