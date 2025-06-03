@@ -6,6 +6,6 @@ RUN git clone --depth 1 https://github.com/myoung34/docker-github-actions-runner
 
 WORKDIR /docker-github-actions-runner
 
-RUN build/install_base.sh
+RUN chmod +x build/*.sh && build/install_base.sh
 
 CMD ["/bin/bash"]
