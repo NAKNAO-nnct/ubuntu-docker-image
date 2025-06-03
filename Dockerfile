@@ -14,6 +14,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     yq \
     ssh \
     zip \
+    ncat \
     build-essential \
     libssl-dev \
     zlib1g-dev \
